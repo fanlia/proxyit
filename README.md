@@ -1,7 +1,7 @@
 
 # proxyit
 
-proxy http get
+proxy http request
 
 ## Usage
 
