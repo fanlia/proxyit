@@ -18,11 +18,18 @@ pub fn (mut app App) proxy() vweb.Result {
 	mut header := http.Header{}
 	header.add(.user_agent, ua)
 	data := app.query['data']
+	proxy_url := app.query['proxy']
+	mut proxy := unsafe { nil }
+	if proxy_url != '' {
+		proxy = http.new_http_proxy(proxy_url) or { return app.text(err.str()) }
+	}
+
 	options := http.FetchConfig{
 		url: url,
 		method: method,
 		header: header,
 		data: data,
+		proxy: proxy,
 	}
 	res := http.fetch(options) or { return app.text(err.str()) }
 
