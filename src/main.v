@@ -10,12 +10,19 @@ struct App {
 @['/p']
 pub fn (mut app App) proxy() vweb.Result {
 	url := app.query['url']
+	method := match app.query['method'] {
+		'post', 'POST' { http.Method.post }
+		else { http.Method.get }
+	}
 	ua := app.req.header.get(.user_agent) or { '' }
 	mut header := http.Header{}
 	header.add(.user_agent, ua)
+	data := app.query['data']
 	options := http.FetchConfig{
 		url: url,
+		method: method,
 		header: header,
+		data: data,
 	}
 	res := http.fetch(options) or { return app.text(err.str()) }
 
