@@ -10,6 +10,7 @@ struct App {
 @['/p']
 pub fn (mut app App) proxy() vweb.Result {
 	url := app.query['url']
+	req_content_type := app.query['content_type']
 	method := match app.query['method'] {
 		'post', 'POST' { http.Method.post }
 		else { http.Method.get }
@@ -17,6 +18,9 @@ pub fn (mut app App) proxy() vweb.Result {
 	ua := app.req.header.get(.user_agent) or { '' }
 	mut header := http.Header{}
 	header.add(.user_agent, ua)
+	if req_content_type != '' {
+		header.add(.content_type, req_content_type)
+	}
 	data := app.query['data']
 	proxy_url := app.query['proxy']
 	mut proxy := unsafe { nil }
